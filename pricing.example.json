@@ -1,0 +1,9 @@
+{
+  "_note": "EXAMPLE ONLY — these are illustrative round numbers to demo the tool, NOT real prices. Copy pricing.json and fill real numbers from official pricing pages before relying on any figure.",
+  "gpt-4o": { "provider": "OpenAI (direct)", "input_per_1m": 2.5, "output_per_1m": 10.0 },
+  "gpt-4o-mini": { "provider": "OpenAI (direct)", "input_per_1m": 0.15, "output_per_1m": 0.6 },
+  "claude-sonnet": { "provider": "Anthropic (direct)", "input_per_1m": 3.0, "output_per_1m": 15.0 },
+  "claude-haiku": { "provider": "Anthropic (direct)", "input_per_1m": 0.8, "output_per_1m": 4.0 },
+  "gemini-2.5-pro": { "provider": "Google (direct)", "input_per_1m": 1.25, "output_per_1m": 10.0 },
+  "deepseek-v3": { "provider": "DeepSeek (direct)", "input_per_1m": 0.27, "output_per_1m": 1.1 }
+}

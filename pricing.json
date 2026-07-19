@@ -1,0 +1,13 @@
+{
+  "_note": "Fill input_per_1m / output_per_1m (USD per 1,000,000 tokens) from each provider's OFFICIAL pricing page. Do not guess. null shows as 'set price'. Then commit. DaoXE prices need confirmation: {{CONFIRM_PRICING}}.",
+  "gpt-4o": { "provider": "OpenAI (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://openai.com/api/pricing/" },
+  "gpt-4o-mini": { "provider": "OpenAI (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://openai.com/api/pricing/" },
+  "claude-sonnet": { "provider": "Anthropic (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://www.anthropic.com/pricing" },
+  "claude-haiku": { "provider": "Anthropic (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://www.anthropic.com/pricing" },
+  "gemini-2.5-pro": { "provider": "Google (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://ai.google.dev/pricing" },
+  "deepseek-v3": { "provider": "DeepSeek (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://platform.deepseek.com/" },
+  "daoxe:gpt-4o": { "provider": "DaoXE (gateway)", "input_per_1m": null, "output_per_1m": null, "note": "{{CONFIRM_PRICING}}", "source": "https://daoxe.com/pricing" },
+  "daoxe:claude-sonnet": { "provider": "DaoXE (gateway)", "input_per_1m": null, "output_per_1m": null, "note": "{{CONFIRM_PRICING}}", "source": "https://daoxe.com/pricing" },
+  "daoxe:gemini-2.5-pro": { "provider": "DaoXE (gateway)", "input_per_1m": null, "output_per_1m": null, "note": "{{CONFIRM_PRICING}}", "source": "https://daoxe.com/pricing" },
+  "daoxe:deepseek-v3": { "provider": "DaoXE (gateway)", "input_per_1m": null, "output_per_1m": null, "note": "{{CONFIRM_PRICING}}", "source": "https://daoxe.com/pricing" }
+}

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LLM Cost Calculator — compare $/token across models &amp; gateways</title>
+<meta name="description" content="Compare LLM API cost per 1M tokens across models and OpenAI-compatible gateways. Data-driven, no fabricated prices." />
+<style>
+  :root { color-scheme: light dark; --bg:#0b0d10; --card:#151a21; --fg:#e7edf3; --mut:#9aa7b4; --acc:#ff6b6b; --line:#263140; }
+  @media (prefers-color-scheme: light){ :root{ --bg:#f6f8fa; --card:#fff; --fg:#0b0d10; --mut:#586471; --line:#e2e8f0; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--fg); }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sub { color: var(--mut); margin: 0 0 20px; }
+  .banner { background: #b9770018; border:1px solid #b9770055; color: inherit; padding:10px 12px; border-radius:10px; font-size:.9rem; margin-bottom:18px; }
+  .controls { display:flex; gap:16px; flex-wrap:wrap; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:18px; }
+  .controls label { display:flex; flex-direction:column; gap:6px; font-size:.85rem; color:var(--mut); }
+  .controls input, .controls select { font:inherit; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--fg); min-width:160px; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  th, td { text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); }
+  th { cursor:pointer; user-select:none; font-size:.85rem; color:var(--mut); }
+  tr:last-child td { border-bottom:0; }
+  td.num, th.num { text-align:right; font-variant-numeric: tabular-nums; }
+  .cheap { color:#3fb950; font-weight:600; }
+  .naprice { color:var(--mut); font-style:italic; }
+  a { color: var(--acc); }
+  footer { margin-top:24px; color:var(--mut); font-size:.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>LLM Cost Calculator</h1>
+  <p class="sub">Compare API cost per request across models and OpenAI-compatible gateways.</p>
+
+  <div class="banner" id="banner">Loading pricing…</div>
+
+  <div class="controls">
+    <label>Input tokens
+      <input id="inTok" type="number" min="0" value="1000000" />
+    </label>
+    <label>Output tokens
+      <input id="outTok" type="number" min="0" value="200000" />
+    </label>
+    <label>Pricing source
+      <select id="src">
+        <option value="pricing.example.json">pricing.example.json (demo, illustrative)</option>
+        <option value="pricing.json">pricing.json (your real data)</option>
+      </select>
+    </label>
+  </div>
+
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th data-k="id">Model</th>
+        <th data-k="provider">Provider</th>
+        <th class="num" data-k="input_per_1m">$/1M in</th>
+        <th class="num" data-k="output_per_1m">$/1M out</th>
+        <th class="num" data-k="total">Total</th>
+      </tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <footer>
+    Prices come from the selected JSON file — this tool never invents numbers.
+    Default gateway example: <a id="daoxe" href="https://daoxe.com/?utm_source=github&utm_medium=organic&utm_campaign=cost_calculator&utm_content=page">DaoXE</a>
+    · <a href="https://github.com/seven7763/llm-gateway-benchmark">latency/availability benchmark</a>
+    · <a href="https://github.com/seven7763/DaoXE-AI">setup examples</a>.
+    Thanks to the <a href="https://linux.do">LINUX DO</a> community.
+  </footer>
+</div>
+
+<script>
+let DATA = {}, sortKey = "total", sortAsc = true;
+const $ = (id) => document.getElementById(id);
+
+function cost(p, ti, to) {
+  if (p.input_per_1m == null || p.output_per_1m == null) return null;
+  return (ti / 1e6) * p.input_per_1m + (to / 1e6) * p.output_per_1m;
+}
+function money(n) {
+  if (n == null) return null;
+  if (n < 0.01 && n > 0) return "$" + n.toFixed(5);
+  return "$" + n.toFixed(n < 1 ? 4 : 2);
+}
+function render() {
+  const ti = Math.max(0, +$("inTok").value || 0), to = Math.max(0, +$("outTok").value || 0);
+  const rows = Object.entries(DATA).filter(([k]) => !k.startsWith("_")).map(([id, p]) => ({
+    id, provider: p.provider || "-", input_per_1m: p.input_per_1m, output_per_1m: p.output_per_1m, total: cost(p, ti, to),
+  }));
+  rows.sort((a, b) => {
+    let x = a[sortKey], y = b[sortKey];
+    if (x == null) x = Infinity; if (y == null) y = Infinity;
+    if (typeof x === "string") return sortAsc ? x.localeCompare(y) : y.localeCompare(x);
+    return sortAsc ? x - y : y - x;
+  });
+  const min = Math.min(...rows.map((r) => (r.total == null ? Infinity : r.total)));
+  $("rows").innerHTML = rows.map((r) => `
+    <tr>
+      <td>${r.id}</td>
+      <td>${r.provider}</td>
+      <td class="num">${r.input_per_1m ?? '<span class="naprice">—</span>'}</td>
+      <td class="num">${r.output_per_1m ?? '<span class="naprice">—</span>'}</td>
+      <td class="num ${r.total === min && r.total != null ? "cheap" : ""}">${money(r.total) ?? '<span class="naprice">set price</span>'}</td>
+    </tr>`).join("");
+}
+async function load(file) {
+  try {
+    const res = await fetch(file, { cache: "no-store" });
+    DATA = await res.json();
+    const isExample = file.includes("example");
+    $("banner").innerHTML = isExample
+      ? "⚠️ <b>Demo data</b> (pricing.example.json): illustrative round numbers, <b>not real prices</b>. Switch to your own <code>pricing.json</code> after filling it from official pricing pages."
+      : (DATA._note || "Using your pricing.json.");
+    render();
+  } catch (e) {
+    $("banner").textContent = "Could not load " + file + " (serve over http, or run the CLI).";
+  }
+}
+["inTok", "outTok"].forEach((id) => $(id).addEventListener("input", render));
+$("src").addEventListener("change", (e) => load(e.target.value));
+document.querySelectorAll("th").forEach((th) => th.addEventListener("click", () => {
+  const k = th.dataset.k; if (sortKey === k) sortAsc = !sortAsc; else { sortKey = k; sortAsc = true; } render();
+}));
+load("pricing.example.json");
+</script>
+</body>
+</html>
