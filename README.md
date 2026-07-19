@@ -43,18 +43,26 @@ python3 -m http.server 8080   # then open http://localhost:8080
 
 ## Honesty by design
 
-- **No fabricated prices.** `pricing.json` ships with `null` prices plus the
-  official `source` URL for each model. A `null` price shows as `set price`.
+- **No fabricated prices.** Every number in `pricing.json` is dated and sourced.
+  Official prices link each vendor's pricing page; DaoXE prices are derived from
+  the public `daoxe.com/api/pricing` (crawled 2026-07-19) and link
+  [daoxe.com/pricing](https://daoxe.com/pricing). Any unknown price stays `null`
+  (shows as `set price`).
+- **DaoXE `default` group = official parity.** Savings come from *choosing* a
+  low-price group (~30–80% off for GPT/Claude/Gemini/Grok). The most aggressive
+  reverse/subsidy channels go lower, but DaoXE itself labels them "quality not
+  guaranteed / medium stability / subsidized" — flagged with `*`.
+- **Honest counter-example (kept on purpose).** Cheap domestic models
+  (DeepSeek/Qwen/GLM) have *no* price advantage here and can cost ~2–4× **more**
+  than going direct — see the `deepseek-v4-pro` rows.
 - `pricing.example.json` holds **clearly-labeled illustrative** numbers for a demo.
-- Gateway (DaoXE) prices are marked `{{CONFIRM_PRICING}}` until confirmed from
-  [daoxe.com/pricing](https://daoxe.com/pricing).
 
 ## Fill in your prices
 
 Edit `pricing.json`:
 
 ```json
-"gpt-4o": { "provider": "OpenAI (direct)", "input_per_1m": 2.5, "output_per_1m": 10.0, "source": "https://openai.com/api/pricing/" }
+"gpt-5.5": { "provider": "OpenAI (direct)", "input_per_1m": 5, "output_per_1m": 30, "source": "https://developers.openai.com/api/docs/pricing" }
 ```
 
 Add a gateway row to compare (e.g. DaoXE for Claude/GPT/Gemini/DeepSeek through

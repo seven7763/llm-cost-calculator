@@ -1,13 +1,67 @@
 {
-  "_note": "Fill input_per_1m / output_per_1m (USD per 1,000,000 tokens) from each provider's OFFICIAL pricing page. Do not guess. null shows as 'set price'. Then commit. DaoXE prices need confirmation: {{CONFIRM_PRICING}}.",
-  "gpt-4o": { "provider": "OpenAI (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://openai.com/api/pricing/" },
-  "gpt-4o-mini": { "provider": "OpenAI (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://openai.com/api/pricing/" },
-  "claude-sonnet": { "provider": "Anthropic (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://www.anthropic.com/pricing" },
-  "claude-haiku": { "provider": "Anthropic (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://www.anthropic.com/pricing" },
-  "gemini-2.5-pro": { "provider": "Google (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://ai.google.dev/pricing" },
-  "deepseek-v3": { "provider": "DeepSeek (direct)", "input_per_1m": null, "output_per_1m": null, "source": "https://platform.deepseek.com/" },
-  "daoxe:gpt-4o": { "provider": "DaoXE (gateway)", "input_per_1m": null, "output_per_1m": null, "note": "{{CONFIRM_PRICING}}", "source": "https://daoxe.com/pricing" },
-  "daoxe:claude-sonnet": { "provider": "DaoXE (gateway)", "input_per_1m": null, "output_per_1m": null, "note": "{{CONFIRM_PRICING}}", "source": "https://daoxe.com/pricing" },
-  "daoxe:gemini-2.5-pro": { "provider": "DaoXE (gateway)", "input_per_1m": null, "output_per_1m": null, "note": "{{CONFIRM_PRICING}}", "source": "https://daoxe.com/pricing" },
-  "daoxe:deepseek-v3": { "provider": "DaoXE (gateway)", "input_per_1m": null, "output_per_1m": null, "note": "{{CONFIRM_PRICING}}", "source": "https://daoxe.com/pricing" }
+  "_note": "Real DaoXE-vs-official prices (USD per 1M tokens, input/output). DaoXE 'default' group = official parity; savings come from choosing a low-price group (~30–80% off for GPT/Claude/Gemini/Grok). HONEST COUNTER-EXAMPLE: cheap domestic models (DeepSeek) can cost MORE on DaoXE than going direct. daoxe crawled 2026-07-19 ~20:26 UTC (/api/pricing); official pricing pages 2026-07-19. Prices drift — daoxe.com/pricing is authoritative.",
+  "_meta": {
+    "daoxe_crawl_utc": "2026-07-19T20:26Z",
+    "official_crawl_date": "2026-07-19",
+    "daoxe_model_count_on_crawl": 373,
+    "daoxe_price_formula": "USD/1M input = model_ratio × 2 × group_ratio; output = input × completion_ratio; default group_ratio = 1.0 (official parity).",
+    "honesty": {
+      "default_group": "≈ official list price (parity), verified against 4 vendors' list prices",
+      "low_price_groups": "GPT/Claude/Gemini/Grok run ~30–80% below official via relay/low-price groups; the most aggressive reverse/subsidy/'福利' channels go lower but DaoXE's own labels flag them 'quality not guaranteed / medium stability / subsidized' (a stability trade-off, marked with * below).",
+      "counter_example": "Cheap domestic models (DeepSeek/Qwen/GLM) have NO price advantage on DaoXE and can be ~2–4× MORE expensive than going direct (see deepseek-v4-pro).",
+      "grok_welfare_note": "The grok-福利 group needs a paid '1.5 元 大乐购' activation before it applies."
+    },
+    "sources": {
+      "daoxe": "https://daoxe.com/pricing",
+      "Anthropic": "https://platform.claude.com/docs/en/about-claude/pricing",
+      "Google": "https://ai.google.dev/gemini-api/docs/pricing",
+      "OpenAI": "https://developers.openai.com/api/docs/pricing",
+      "xAI": "https://docs.x.ai/developers/pricing",
+      "DeepSeek": "https://api-docs.deepseek.com/quick_start/pricing"
+    }
+  },
+
+  "gemini-2.5-pro": { "provider": "Google (direct)", "input_per_1m": 1.25, "output_per_1m": 10, "source": "https://ai.google.dev/gemini-api/docs/pricing" },
+  "daoxe:gemini-2.5-pro": { "provider": "DaoXE (default, parity)", "input_per_1m": 1.25, "output_per_1m": 10, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:gemini-2.5-pro@ant-gemini": { "provider": "DaoXE (Ant-Gemini 官方中转, 0.30)", "input_per_1m": 0.375, "output_per_1m": 3.0, "note": "official Gemini relay group; ≈70% below official list", "source": "https://daoxe.com/pricing" },
+
+  "gemini-3.5-flash": { "provider": "Google (direct)", "input_per_1m": 1.5, "output_per_1m": 9, "source": "https://ai.google.dev/gemini-api/docs/pricing" },
+  "daoxe:gemini-3.5-flash": { "provider": "DaoXE (default, parity)", "input_per_1m": 1.5, "output_per_1m": 9, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:gemini-3.5-flash@ant-gemini": { "provider": "DaoXE (Ant-Gemini 官方中转, 0.30)", "input_per_1m": 0.45, "output_per_1m": 2.7, "note": "official Gemini relay group; ≈70% below official list", "source": "https://daoxe.com/pricing" },
+
+  "claude-opus-4-5": { "provider": "Anthropic (direct)", "input_per_1m": 5, "output_per_1m": 25, "source": "https://platform.claude.com/docs/en/about-claude/pricing" },
+  "daoxe:claude-opus-4-5": { "provider": "DaoXE (default, parity)", "input_per_1m": 5, "output_per_1m": 25, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:claude-opus-4-5@officialmax": { "provider": "DaoXE (claude-官方max-满血, 0.70)", "input_per_1m": 3.5, "output_per_1m": 17.5, "note": "stable full-strength group; ≈30% below official. Reverse group (claude-kiro-逆向, 0.15) is lower still but stability not guaranteed.", "source": "https://daoxe.com/pricing" },
+
+  "claude-sonnet-4-5": { "provider": "Anthropic (direct)", "input_per_1m": 3, "output_per_1m": 15, "source": "https://platform.claude.com/docs/en/about-claude/pricing" },
+  "daoxe:claude-sonnet-4-5": { "provider": "DaoXE (default, parity)", "input_per_1m": 3, "output_per_1m": 15, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:claude-sonnet-4-5@officialmax": { "provider": "DaoXE (claude-官方max-满血, 0.70)", "input_per_1m": 2.1, "output_per_1m": 10.5, "note": "stable full-strength group; ≈30% below official", "source": "https://daoxe.com/pricing" },
+
+  "claude-haiku-4-5": { "provider": "Anthropic (direct)", "input_per_1m": 1, "output_per_1m": 5, "source": "https://platform.claude.com/docs/en/about-claude/pricing" },
+  "daoxe:claude-haiku-4-5": { "provider": "DaoXE (default, parity)", "input_per_1m": 1, "output_per_1m": 5, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:claude-haiku-4-5@kiro-reverse": { "provider": "DaoXE (claude-kiro-逆向, 0.15) *reverse", "input_per_1m": 0.15, "output_per_1m": 0.75, "note": "* reverse channel; ≈85% below official but stability NOT guaranteed (DaoXE's own label)", "source": "https://daoxe.com/pricing" },
+
+  "gpt-5.5": { "provider": "OpenAI (direct)", "input_per_1m": 5, "output_per_1m": 30, "source": "https://developers.openai.com/api/docs/pricing" },
+  "daoxe:gpt-5.5": { "provider": "DaoXE (default, parity)", "input_per_1m": 5, "output_per_1m": 30, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:gpt-5.5@codex-pro": { "provider": "DaoXE (codex-pro, 0.20)", "input_per_1m": 1, "output_per_1m": 6, "note": "gpt pro pool; ≈80% below official. Cheapest 超低价codex-GPT (0.05) lower still.", "source": "https://daoxe.com/pricing" },
+
+  "gpt-5.4": { "provider": "OpenAI (direct)", "input_per_1m": 2.5, "output_per_1m": 15, "source": "https://developers.openai.com/api/docs/pricing" },
+  "daoxe:gpt-5.4": { "provider": "DaoXE (default, parity)", "input_per_1m": 2.5, "output_per_1m": 15, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:gpt-5.4@codex-pro": { "provider": "DaoXE (codex-pro, 0.20)", "input_per_1m": 0.5, "output_per_1m": 3, "note": "gpt pro pool; ≈80% below official", "source": "https://daoxe.com/pricing" },
+
+  "grok-4.5": { "provider": "xAI (direct)", "input_per_1m": 2, "output_per_1m": 6, "source": "https://docs.x.ai/developers/pricing" },
+  "daoxe:grok-4.5": { "provider": "DaoXE (default, parity)", "input_per_1m": 2, "output_per_1m": 6, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:grok-4.5@welfare": { "provider": "DaoXE (grok-福利, 0.05) *needs 1.5元 activation", "input_per_1m": 0.1, "output_per_1m": 0.3, "note": "* subsidy group; ≈95% below official but requires paid '1.5 元 大乐购' activation first", "source": "https://daoxe.com/pricing" },
+
+  "grok-4.3": { "provider": "xAI (direct)", "input_per_1m": 1.25, "output_per_1m": 2.5, "source": "https://docs.x.ai/developers/pricing" },
+  "daoxe:grok-4.3": { "provider": "DaoXE (default, parity)", "input_per_1m": 1.25, "output_per_1m": 2.5, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:grok-4.3@welfare": { "provider": "DaoXE (grok-福利, 0.05) *needs 1.5元 activation", "input_per_1m": 0.062, "output_per_1m": 0.125, "note": "* subsidy group; ≈95% below official but requires paid '1.5 元 大乐购' activation first", "source": "https://daoxe.com/pricing" },
+
+  "deepseek-v4-pro": { "provider": "DeepSeek (direct)", "input_per_1m": 0.435, "output_per_1m": 0.87, "source": "https://api-docs.deepseek.com/quick_start/pricing" },
+  "daoxe:deepseek-v4-pro": { "provider": "DaoXE (default) ⚠ COUNTER-EXAMPLE", "input_per_1m": 1.74, "output_per_1m": 3.48, "note": "⚠ default group is ~4× MORE expensive than going direct — domestic models have no price advantage here", "source": "https://daoxe.com/pricing" },
+  "daoxe:deepseek-v4-pro@overseas-domestic": { "provider": "DaoXE (海外国产模型, 0.50) ⚠ still pricier", "input_per_1m": 0.87, "output_per_1m": 1.74, "note": "⚠ even the low-price group is ~2× the DeepSeek-direct price", "source": "https://daoxe.com/pricing" },
+
+  "deepseek-v4-flash": { "provider": "DeepSeek (direct)", "input_per_1m": 0.14, "output_per_1m": 0.28, "source": "https://api-docs.deepseek.com/quick_start/pricing" },
+  "daoxe:deepseek-v4-flash": { "provider": "DaoXE (default, parity)", "input_per_1m": 0.14, "output_per_1m": 0.28, "note": "default group = official parity", "source": "https://daoxe.com/pricing" },
+  "daoxe:deepseek-v4-flash@overseas-domestic": { "provider": "DaoXE (海外国产模型, 0.50)", "input_per_1m": 0.07, "output_per_1m": 0.14, "note": "low-price group ≈50% below official for this flash model", "source": "https://daoxe.com/pricing" }
 }
